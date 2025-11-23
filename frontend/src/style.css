@@ -1,0 +1,51 @@
+:root {
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: dark;
+  
+  /* Палитра цветов */
+  --bg-app: #0f172a;       /* Глубокий темно-синий */
+  --bg-card: #1e293b;      /* Чуть светлее для карточек */
+  --text-main: #e2e8f0;
+  --text-muted: #94a3b8;
+  
+  --color-primary: #3b82f6; /* Яркий синий */
+  --color-success: #10b981; /* Неоновый зеленый */
+  --color-error: #ef4444;   /* Яркий красный */
+  --color-accent: #8b5cf6;  /* Фиолетовый */
+
+  background-color: var(--bg-app);
+  color: var(--text-main);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  place-items: center; /* Центрируем по вертикали */
+  justify-content: center;
+  min-height: 100vh;
+  min-width: 320px;
+}
+
+h1, h2, h3 {
+  margin: 0;
+  font-weight: 700;
+}
+
+/* Кастомный скроллбар для логов */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-app); 
+}
+::-webkit-scrollbar-thumb {
+  background: #334155; 
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569; 
+}
