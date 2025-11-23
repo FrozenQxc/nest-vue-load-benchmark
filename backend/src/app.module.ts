@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import * as Joi from 'joi'
-import { ItemsModule } from './items/items.module'; // Создадим позже
+import { ItemsModule } from './items/items.module'
 
 @Module({
   imports: [
@@ -18,7 +18,7 @@ import { ItemsModule } from './items/items.module'; // Создадим позж
         DB_DATABASE: Joi.string().required(),
       }),
     }),
-    // 2. Асинхронное подключение к БД (чтобы читать из ConfigService)
+    // 2. Асинхронное подключение к БД
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -29,7 +29,7 @@ import { ItemsModule } from './items/items.module'; // Создадим позж
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: true, // В продакшене так нельзя, но для теста ок
+        synchronize: true, // test
         logging: false,
       }),
       inject: [ConfigService],
