@@ -1,12 +1,14 @@
+import { CacheModule } from '@nestjs/cache-manager'
 import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import * as Joi from 'joi'
+import { Item } from './items/entities/item.entity'
 import { ItemsModule } from './items/items.module'
 
 @Module({
   imports: [
-    // 1. Конфигурация с валидацией
+    // ----------------- Config -----------------
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
@@ -18,22 +20,36 @@ import { ItemsModule } from './items/items.module'
         DB_DATABASE: Joi.string().required(),
       }),
     }),
-    // 2. Асинхронное подключение к БД
+
+    // ----------------- In‑memory Cache -----------------
+    // ttl – 10 сек (по‑умолчанию), max – 1000 записей в кеше
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 10,          // seconds
+      max: 1000,        // max items
+    }),
+
+    // ----------------- TypeORM (PostgreSQL) -----------------
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
-        username: configService.get<string>('DB_USERNAME'),
-        password: configService.get<string>('DB_PASSWORD'),
-        database: configService.get<string>('DB_DATABASE'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: true, // test
-        logging: false,
-      }),
       inject: [ConfigService],
+      useFactory: (cfg: ConfigService) => ({
+        type: 'postgres',
+        host: cfg.get<string>('DB_HOST'),
+        port: cfg.get<number>('DB_PORT'),
+        username: cfg.get<string>('DB_USERNAME'),
+        password: cfg.get<string>('DB_PASSWORD'),
+        database: cfg.get<string>('DB_DATABASE'),
+        entities: [Item],
+        synchronize: true, // в продакшн замените миграциями
+        logging: false,
+        dropSchema: true,
+        extra: {
+          max: 20, // одновременно открытых соединений к PostgreSQL
+        },
+      }),
     }),
+
     ItemsModule,
   ],
 })

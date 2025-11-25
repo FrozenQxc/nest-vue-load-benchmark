@@ -1,22 +1,55 @@
 version: '3.8'
 
 services:
-  postgres:
+  # --- 1. Database ---
+  db:
     image: postgres:15-alpine
-    container_name: ht_postgres
+    container_name: benchmark_db
+    restart: always
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: highload_db
+      POSTGRES_DB: benchmark_db
     ports:
-      - "5434:5432" 
+      - "5432:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user -d highload_db"]
+      test: ["CMD-SHELL", "pg_isready -U user -d benchmark_db"]
       interval: 5s
       timeout: 5s
       retries: 5
+
+  # --- 2. Backend ---
+  backend:
+    build: ./backend
+    container_name: benchmark_api
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      # "db" — это имя сервиса базы данных выше
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USERNAME: user
+      DB_PASSWORD: password
+      DB_DATABASE: highload_db
+      # Разрешаем CORS для любого источника (для удобства)
+      CORS_ORIGIN: "*"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # --- 3. Frontend ---
+  frontend:
+    build: ./frontend
+    container_name: benchmark_web
+    restart: always
+    ports:
+      - "8080:80" # Сайт будет доступен на localhost:8080
+    depends_on:
+      - backend
 
 volumes:
   pg_data:

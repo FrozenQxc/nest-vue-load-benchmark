@@ -24,7 +24,7 @@ body {
   margin: 0;
   padding: 0;
   display: flex;
-  place-items: center; /* Центрируем по вертикали */
+  place-items: center;  
   justify-content: center;
   min-height: 100vh;
   min-width: 320px;
@@ -35,7 +35,6 @@ h1, h2, h3 {
   font-weight: 700;
 }
 
-/* Кастомный скроллбар для логов */
 ::-webkit-scrollbar {
   width: 8px;
 }

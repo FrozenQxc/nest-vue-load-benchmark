@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB:-testdb}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER:-user}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    # Используем Dockerfile.dev, который мы починили (где COPY . .)
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    environment:
+      PORT: 3000
+      # Внутри докера бэк видит базу по имени сервиса "db"
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USERNAME: ${POSTGRES_USER:-user}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      DB_DATABASE: ${POSTGRES_DB:-testdb}
+      NODE_ENV: development
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3000:3000" # <--- ЭТО ВАЖНО: порт торчит наружу, чтобы локальный фронт его видел
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command: ["npm", "run", "start:dev"]
+
+volumes:
+  pgdata:
