@@ -31,7 +31,7 @@
     ```
 
 3.  После запуска сервисы будут доступны по следующим адресам:
-    -   **Frontend (UI):** [http://localhost:8080](http://localhost:8080)
+    -   **Frontend:** [http://localhost:8080](http://localhost:8080)
     -   **Backend API:** [http://localhost:3000](http://localhost:3000)
     -   **Swagger Docs:** [http://localhost:3000/api/docs](http://localhost:3000/api/docs)
 
