@@ -27,7 +27,7 @@
 
 2.  **Запустите сервис с помощью Docker Compose:**
     ```sh
-    docker-compose up --build -d
+    docker-compose up --build
     ```
 
 3.  После запуска сервисы будут доступны по следующим адресам:
