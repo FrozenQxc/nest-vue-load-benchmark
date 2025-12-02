@@ -41,7 +41,7 @@ import { ItemsModule } from './items/items.module'
         password: cfg.get<string>('DB_PASSWORD'),
         database: cfg.get<string>('DB_DATABASE'),
         entities: [Item],
-        synchronize: true, // в продакшн замените миграциями
+        synchronize: true, // в продакшн false
         logging: false,
         dropSchema: true,
         extra: {
