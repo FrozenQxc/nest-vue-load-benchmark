@@ -33,7 +33,6 @@ services:
       DB_PORT: 5432
       DB_USERNAME: user
       DB_PASSWORD: password
-      # ИСПРАВЛЕНО: было highload_db, стало benchmark_db (как в сервисе db)
       DB_DATABASE: benchmark_db
       CORS_ORIGIN: "*"
     depends_on:
