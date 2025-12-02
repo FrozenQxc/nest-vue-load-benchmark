@@ -214,8 +214,7 @@ async function runServerLoad() {
   stats.success = localSuccess
   addLog(`✅ Результат сервера: ${data.rps} RPS, ${data.duration} мс`)
 }
-
-// ... остальной код (finishTest, onUnmounted) без изменений ...
+  
 function finishTest() {
   stats.isRunning = false
   
